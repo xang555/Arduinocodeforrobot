@@ -6,6 +6,23 @@ var name={};
 io.sockets.on('connection', function(socket) {  
   
     console.log("client connect");
+
+
+	socket.on('pi', function(d) {
+		 var obj;
+fs.readFile('./store.json', 'utf8', function (err, data) {
+  if (err) throw err;
+   obj = JSON.parse(data); 
+  socket.emit('pi',obj);
+ 
+});
+});
+	
+	
+	
+	
+	
+	
          
     socket.on('robot', function(data) { 
         
@@ -146,6 +163,14 @@ fs.readFile('./usernametore.json', 'utf8', function (err, data) {
     
 }); //on connect
 
+
+
+
+
+
+
+	
+
 //==========function==================//
 function appendObject(obj){
   var configFile = fs.readFileSync('./usernametore.json');
@@ -164,4 +189,3 @@ function removeusername(i){
   fs.writeFileSync('./usernametore.json', configJSON);
         
 }//end remove user
-
