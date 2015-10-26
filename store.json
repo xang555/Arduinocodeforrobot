@@ -4,23 +4,23 @@
         "stt":"on"
     },
     {
-        "pin":5,
+        "pin":17,
         "stt":"on"
     },
     {
-        "pin":6,
+        "pin":18,
         "stt":"on"
     },
     {
-        "pin":7,
+        "pin":22,
         "stt":"on"
     },
     {
-        "pin":8,
+        "pin":23,
         "stt":"on"
     },
     {
-        "pin":9,
+        "pin":24,
         "stt":"on"
     },
     {
@@ -28,7 +28,7 @@
         "stt":"on"
     },
     {
-        "pin":11,
+        "pin":25,
         "stt":"on"
     }
     
