@@ -1,36 +1,32 @@
 [
-    {
-        "pin":4,
-        "stt":"on"
-    },
-    {
-        "pin":17,
-        "stt":"on"
-    },
-    {
-        "pin":18,
-        "stt":"on"
-    },
-    {
-        "pin":22,
-        "stt":"on"
-    },
-    {
-        "pin":23,
-        "stt":"on"
-    },
-    {
-        "pin":24,
-        "stt":"on"
-    },
-    {
-        "pin":10,
-        "stt":"on"
-    },
-    {
-        "pin":25,
-        "stt":"on"
-    }
+    {"pin":4,"stt":"on","name":"xang"},
     
+    {"pin":17,"stt":"off","name":"xang"},
     
-]
+    {"pin":18,"stt":"on","name":"xang"},
+    
+    {"pin":22,"stt":"off","name":"xang"},
+    
+    {"pin":23,"stt":"on","name":"xang"},
+    
+    {"pin":24,"stt":"off","name":"xang"},
+    
+    {"pin":10,"stt":"off","name":"xang"},
+    
+    {"pin":25,"stt":"off","name":"xang"},
+    
+    {"pin":28,"stt":"off","name":"xang"},
+    
+    {"pin":9,"stt":"off","name":"xang"},
+    
+    {"pin":27,"stt":"on","name":"xang"},
+    
+    {"pin":7,"stt":"on","name":"xang"},
+    
+    {"pin":8,"stt":"off","name":"xang"},
+    
+    {"pin":11,"stt":"on","name":"xang"},
+        
+    {"pin":14,"stt":"on","name":"xang"}
+           
+    ]
