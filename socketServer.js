@@ -12,32 +12,15 @@ io.sockets.on('connection', function(socket) {
        //get values from phone //    
       var pin = data.pin; //pin
       var stat=data.stt; //command
+      var whosend=data.name;
       var msg= pin+" : "+stat;
         //=====save file======//
-        var obj=null;
-fs.readFile('./store.json', 'utf8', function (err, data) {
-  if (err) throw err;
-  obj = JSON.parse(data);
-  for(var i=0;i<obj.length;i++){
+        readwritejson(pin,stat,whosend);
       
-      if(obj[i].pin==pin){
-          obj[i].stt=stat;
-           fs.writeFile('./store.json', JSON.stringify(obj),function (err){
-        if (err) throw err;
-        
-            });
-      }
-            
-  }
-  
-});
-   
-  
- 
       //=================send passing sendmessage===========================//  
         
             console.log(msg);     
-        io.sockets.emit('robot', {'pin':pin,'stt':stat}); // send pin and command
+        io.sockets.emit('robot', {'pin':pin,'stt':stat,'name':whosend}); // send pin and command
             
        //get values from pi//
        var ack=data.ack; //get values ack; ack:1 when successfully
@@ -46,100 +29,38 @@ fs.readFile('./store.json', 'utf8', function (err, data) {
         }
         
     }); //on send via robot
-    //
+ 
     //================restore===============================//
     
-    socket.on('restore',function (data){
-        
-        var pin=data.pin; //pin for restore
-            var obj;
-fs.readFile('./store.json', 'utf8', function (err, data) {
-  if (err) throw err;
-  obj = JSON.parse(data);
-  for(var i=0;i<obj.length;i++){
-      if(obj[i].pin==pin){
-          socket.emit('restore',obj[i]);
-                    break;
-      }
-      
-      
-  }//end for
- 
-});
-    
-        
+    socket.on('restore',function (data){ //on restore
+         var pin=data.pin; //pin for restore
+         restorestat(pin,socket); //restorestat
                 
-    });
+    });//end on restore
+    
+    //==========stat restores=============//
+    
+     socket.on('restt',function (data){ //on restt
+           
+      resstt(socket); //resstt
+                            
+    });//end restt
     
    //==============send name===================//
    
-   socket.on('sendname',function (data){
+   socket.on('sendname',function (data){ //on sendname
        
        var username=data.name;
-       var logic=true;
-       var obj;
-fs.readFile('./usernametore.json', 'utf8', function (err, data) {
-  if (err) throw err;
-  obj = JSON.parse(data);
-  for(var i=0;i<obj.length;i++){
-      
-      var strname=obj[i].name;
-       var n = strname.localeCompare(username);
-      if(n==0){
-          logic=true;
-          break;
-      }else{
-           logic=false;
-            continue;
-      }//end if else
-            
-  }//end for
- 
- if(!logic){
-     appendObject({"name" :username}); //save username
-     name[socket.id]=username;
- }//end if
-  
- 
-});
-      
-       io.sockets.emit('extraname',{name:username});
-       console.log("useraccess to home : "+username);
+        saveusername(username,socket);   
        
    });//end sendname
-   
-   socket.on('extraname',function (data){
-       
-         var obj;
-fs.readFile('./usernametore.json', 'utf8', function (err, data) {
-  if (err) throw err;
-  obj = JSON.parse(data);
-  socket.emit('extraname',obj);
- 
-});
-       
-       
-   });//end extraname
+
    
    //===============disconnect=================//
     
     socket.on('disconnect', function(data) {
    var username=name[socket.id];
-   var obj;
-fs.readFile('./usernametore.json', 'utf8', function (err, data) {
-  if (err) throw err;
-  obj = JSON.parse(data);
-  for(var i=0;i<obj.length;i++){
-      if(obj[i].name==username){
-          removeusername(i);
-          socket.emit('extraname',obj[i]);
-                    break;
-      }
-            
-  }//end for
- 
-});
-       
+    savewhendiscon(username);
      console.log(username +" clien disconnect");
      
     });//end disconnect
@@ -164,4 +85,83 @@ function removeusername(i){
   fs.writeFileSync('./usernametore.json', configJSON);
         
 }//end remove user
+
+function readwritejson(pin,stat,whosend){
+    
+     var configFile = fs.readFileSync('./store.json');
+  var obj = JSON.parse(configFile);
+    for(var i=0;i<obj.length;i++){
+      
+      if(obj[i].pin==pin){
+          obj[i].stt=stat;
+          obj[i].name=whosend;
+         var configJSON = JSON.stringify(obj);
+        fs.writeFileSync('./store.json', configJSON);
+      }//end if
+            
+  }//end for
+  
+    
+}//end function readwritwjson
+
+function restorestat(pin,socket){
+    
+       var configFile = fs.readFileSync('./store.json');
+         var obj = JSON.parse(configFile);
+          for(var i=0;i<obj.length;i++){
+      if(obj[i].pin==pin){
+          socket.emit('restore',obj[i]);
+          break;
+      }
+            
+  }//end for
+    
+}
+
+function resstt(socket){
+  var configFile = fs.readFileSync('./usernametore.json');
+  var config = JSON.parse(configFile);
+     socket.emit('restt',config);
+    
+}//end resstt
+
+function saveusername(username,socket){
+    var logic=true;
+ var configFile = fs.readFileSync('./usernametore.json');
+  var obj = JSON.parse(configFile);
+  for(var i=0;i<obj.length;i++){
+        var strname=obj[i].name;
+       var n = strname.localeCompare(username);
+      if(n==0){
+          logic=true;
+          break;
+      }else{
+           logic=false;
+            continue;
+      }//end if else
+            
+  }//end for
+   
+ if(!logic){
+     appendObject({"name" :username}); //save username
+     name[socket.id]=username;
+ }//end if
+ 
+  console.log("useraccess to home : "+username);
+    
+}//end saveuser
+
+function savewhendiscon(username){
+  var configFile = fs.readFileSync('./usernametore.json');
+  var obj = JSON.parse(configFile);
+      for(var i=0;i<obj.length;i++){
+      if(obj[i].name==username){
+          removeusername(i);
+          break;
+      }
+            
+  }//end for
+    
+}//end savewhendiscon
+
 
